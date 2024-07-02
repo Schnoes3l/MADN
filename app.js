@@ -58,11 +58,56 @@ function switchPlayer() {
 }
 
 function playerTurn(player) {
-    //TODO: player makes turn (role the dice, move selected player (automatically), if 6 then player gets 2nd turn)
+  let figsInBase = 0;
+  let maxMoveableFigs = 0;
+  let currentFig = -1;
+  let roll = 0;
+  let dice6 = false;
+
+  do {
+    dice6 = false;
+    maxMoveableFigs = countMoveableFigs(player);
+
+    for (let i = 0; i < 4; i++) {
+      if (player.figs[i].position == 0) {
+        figsInBase += 1;
+      }
+    }
+
+    if (figsInBase > 0 && maxMoveableFigs == 0) {
+      for (let i = 0; i < 3; i++) {
+        if (roleDice() == 6) {
+          player.figs[0].position = 1;
+          dice6 = true;
+          i = 3;
+        }
+      }
+    }
+
+    currentFig = pickFig(player);
+
+    roll = roleDice();
+    if (roll == 6) {
+      dice6 = true;
+    }
+
+    player.figs[currentFig].position += roll;
+  } while (dice6 == true);
+
+  return player;
+  //TODO: when the player can't move for some reason (example: if the fig is at the end and needs a specific number to progress) they then can throw the dice 3 times till they get the correct number
 }
 
 function roleDice() {
     return Math.ceil(Math.random() * 6);
+}
+
+function countMoveableFigs(player) {
+  //TODO: count how many figs can still move
+}
+
+function pickFig(player) {
+  //TODO: player chooses which fig to move that is able to move currently
 }
 
 //? later on "CrazyMode" where there are more than 2 dice and numbers from 1-12 or from 1-3/3-6 etc.
